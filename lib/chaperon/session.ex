@@ -647,7 +647,7 @@ defmodule Chaperon.Session do
   def run_action(in_session, action) do
     session =
       case in_session do
-        {:ok, %Chaperon.Session{}} -> s
+        {:ok, %Chaperon.Session{} = s} -> s
         s -> s
       end
 
