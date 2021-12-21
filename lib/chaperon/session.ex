@@ -644,7 +644,13 @@ defmodule Chaperon.Session do
     session
   end
 
-  def run_action(session, action) do
+  def run_action(in_session, action) do
+    session =
+      case in_session do
+        {:ok, %Chaperon.Session{}} -> s
+        s -> s
+      end
+
     case Chaperon.Actionable.run(action, session) do
       {:error, %Chaperon.Session.Error{reason: reason}} ->
         session
@@ -999,9 +1005,7 @@ defmodule Chaperon.Session do
 
     @spec message(t()) :: String.t()
     def message(%__MODULE__{config_key: key, session: session}) do
-      "[Chaperon.Session.RequiredConfigMissingError #{session.id} #{session.name}] | #{
-        inspect(key)
-      } "
+      "[Chaperon.Session.RequiredConfigMissingError #{session.id} #{session.name}] | #{inspect(key)} "
     end
   end
 
@@ -1864,9 +1868,7 @@ defimpl String.Chars, for: Chaperon.Session do
             "Session{id: #{inspect(session.id)}, scenario: #{inspect(scenario_mod)}}"
 
           parent_id ->
-            "Session{id: #{inspect(session.id)}, scenario: #{inspect(scenario_mod)}, parent_id: #{
-              inspect(parent_id)
-            }}"
+            "Session{id: #{inspect(session.id)}, scenario: #{inspect(scenario_mod)}, parent_id: #{inspect(parent_id)}}"
         end
 
       nil ->
